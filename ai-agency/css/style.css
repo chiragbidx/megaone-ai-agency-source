@@ -315,6 +315,7 @@ section {
 /* Button */
 .btn {
     -webkit-appearance: initial;
+    appearance: initial;
     overflow: hidden;
     position: -webkit-sticky;
     position: sticky;
