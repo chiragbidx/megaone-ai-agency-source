@@ -9,7 +9,7 @@ let lastSha = null;
 function run(cmd) {
   return new Promise((resolve, reject) => {
     exec(cmd, { cwd: "/app" }, (err, stdout) => {
-      if (err) return reject(err.message);
+      if (err) return reject(err.message || err);
       resolve(stdout.trim());
     });
   });
@@ -20,12 +20,13 @@ export async function startGitPoll() {
 
   async function poll() {
     try {
-      await run("git fetch origin");
+      await run(`git fetch origin ${BRANCH}`);
       const sha = await run(`git rev-parse origin/${BRANCH}`);
 
       if (sha !== lastSha) {
         console.log("[git-poll] update detected");
         await run(`git reset --hard origin/${BRANCH}`);
+        await run("git clean -fd");
         lastSha = sha;
         triggerReload();
       }
